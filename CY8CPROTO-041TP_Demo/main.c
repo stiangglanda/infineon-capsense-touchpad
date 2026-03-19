@@ -46,6 +46,7 @@
 #include "cycfg_capsense.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "cy_retarget_io.h"
 /*******************************************************************************
  * User configurable Macros
  ********************************************************************************/
@@ -266,7 +267,20 @@ int main(void)
     static uint32_t alr_processing_time;
     #endif
 
-    result = cybsp_init() ;
+    result = cybsp_init();
+
+    /* Initialize and enable the UART hardware using PDL */
+    if (CY_SCB_UART_SUCCESS != Cy_SCB_UART_Init(CYBSP_UART_HW, &CYBSP_UART_config, &CYBSP_UART_context))
+    {
+        CY_ASSERT(CY_ASSERT_FAILED);
+    }
+    Cy_SCB_UART_Enable(CYBSP_UART_HW);
+
+    /* Initialize retarget-io to use printf over the pre-initialized UART */
+    if (CY_RSLT_SUCCESS != cy_retarget_io_init(CYBSP_UART_HW))
+    {
+        CY_ASSERT(CY_ASSERT_FAILED);
+    }
 
     #if ENABLE_RUN_TIME_MEASUREMENT
     init_sys_tick();
@@ -711,6 +725,10 @@ void led_control()
             /* LED2 & LED3 Turns ON and brightness changes when there is a touch detected on the Touchpad */
             Cy_TCPWM_PWM_SetCompare0(CYBSP_PWM0_HW, CYBSP_PWM0_NUM, touchpad_pos_x);
             Cy_TCPWM_PWM_SetCompare0(CYBSP_PWM1_HW, CYBSP_PWM1_NUM, touchpad_pos_y);
+
+            touchpad_pos_x = touchpad_touch_info->ptrPosition->x;
+
+            printf("T:%d,%d\n", touchpad_pos_x, touchpad_pos_y);
         }
         else
         {
@@ -735,6 +753,7 @@ void led_control()
             {
                 Cy_TCPWM_PWM_SetCompare0(CYBSP_PWM1_HW, CYBSP_PWM1_NUM, CYBSP_LED_OFF);
             }
+            printf("R\n");
         }
 
         if(Cy_CapSense_IsWidgetActive(CY_CAPSENSE_PROXIMITY0_WDGT_ID, &cy_capsense_context) )
