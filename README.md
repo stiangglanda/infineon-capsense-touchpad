@@ -2,7 +2,11 @@
 
 This project turns an Infineon evaluation board (acquired at Embedded World 2026) into a functional external PC touchpad. 
 
-It reads finger coordinates using the onboard CAPSENSE™ technology, transmits that data over a serial connection (UART), and uses a host-side Python script to capture the data and move the desktop mouse cursor accordingly.
+It reads finger coordinates using the onboard CAPSENSE technology, transmits that data over a serial connection (UART), and uses a host-side Python script to capture the data and move the desktop mouse cursor accordingly.
+
+
+https://github.com/user-attachments/assets/53c0d525-7f8d-4bac-b7d9-f895b689f576
+
 
 ## How It Works
 1. **Firmware (C):** The PSoC microcontroller continuously scans the touchpad widget. When a touch is detected, it calculates the X and Y coordinates and prints them over the KitProg3 UART bridge (e.g., `T:120,45`). When the finger is lifted, it sends a release signal (`R`).
@@ -11,11 +15,11 @@ It reads finger coordinates using the onboard CAPSENSE™ technology, transmits 
 ## Requirements
 
 ### Hardware
-- Infineon PSoC Evaluation Board with CAPSENSE™ touchpad (e.g., PSoC™ 4100T Plus Prototyping Kit).
+- Infineon PSoC Evaluation Board with CAPSENSE touchpad (e.g., PSoC 4100T Plus Prototyping Kit).
 - USB-C cable.
 
 ### Software
-- **ModusToolbox™:** Required to compile and flash the firmware to the microcontroller.
+- **ModusToolbox:** Required to compile and flash the firmware to the microcontroller.
 - **Python 3:** To run the host script.
 - **Linux with X11:** The host machine must be running an X11 display server. 
 
